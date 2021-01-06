@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:doc="http://www.rumbe.ru/internal/services/checkDocumentService/docs"
+                  xmlns:ser="http://www.rumbe.ru/internal/services/checkDocumentService"
+                  name="checkDocumentService"
+                  targetNamespace="http://www.rumbe.ru/internal/services/checkDocumentService">
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://www.rumbe.ru/internal/services/checkDocumentService/docs"
+                        schemaLocation="checkRumbeDocuments.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="requestMessage">
+        <wsdl:part name="payload" element="doc:checkDocumentRequest"/>
+    </wsdl:message>
+    <wsdl:message name="replyMessage">
+        <wsdl:part name="payload" element="doc:checkDocumentResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="checkDocumentService_ptt">
+        <wsdl:operation name="checkRumbeDoc">
+            <wsdl:input message="ser:requestMessage"/>
+            <wsdl:output message="ser:replyMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="checkDocumentService_pttBinding" type="ser:checkDocumentService_ptt">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="checkRumbeDoc">
+            <soap:operation style="document" soapAction="checkRumbeDoc"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="checkRumbeDocService">
+        <wsdl:port name="checkRumbeDocService_port" binding="ser:checkDocumentService_pttBinding">
+            <soap:address location="http://host:port/internal/income"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
