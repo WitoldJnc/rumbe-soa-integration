@@ -11,12 +11,14 @@
                         schemaLocation="checkRumbeDocuments.xsd"/>
         </xsd:schema>
     </wsdl:types>
+
     <wsdl:message name="requestMessage">
         <wsdl:part name="payload" element="doc:checkDocumentRequest"/>
     </wsdl:message>
     <wsdl:message name="replyMessage">
         <wsdl:part name="payload" element="doc:checkDocumentResponse"/>
     </wsdl:message>
+
     <wsdl:portType name="checkDocumentService_ptt">
         <wsdl:operation name="checkRumbeDoc">
             <wsdl:input message="ser:requestMessage"/>

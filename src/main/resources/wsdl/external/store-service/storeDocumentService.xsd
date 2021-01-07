@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xsd:schema targetNamespace="http://www.rumbe.ru/soa/lc/1_2"
+            elementFormDefault="qualified"
+            jaxb:version="2.1" version="1.0" xmlns="http://www.rumbe.ru/soa/lc/1_2"
+            xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+            xmlns:store="http://www.rumbe.ru/soa/lc/1_2"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <xsd:element name="storeDocReq" type="store:storeDocReqType"/>
+    <xsd:element name="storeDocResp" type="store:storeDocRespType"/>
+
+    <!--    response-->
+    <xsd:complexType name="storeDocRespType">
+        <xsd:sequence>
+            <xsd:element name="document" type="store:outcomeDocument" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="outcomeDocument">
+        <xsd:sequence>
+            <xsd:element name="log" type="xsd:normalizedString" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="guid" type="guid" use="required" />
+        <xsd:attribute name="state" type="xsd:token" use="required" />
+        <xsd:attribute name="result" type="store:lcResult"/>
+    </xsd:complexType>
+
+    <xsd:simpleType name="lcResult">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="CREATED" />
+            <xsd:enumeration value="UPDATED" />
+            <xsd:enumeration value="SKIPPED" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <!--    response-->
+
+    <!--    request-->
+    <xsd:complexType name="storeDocReqType">
+        <xsd:sequence>
+            <xsd:element name="document" type="store:incomeDocument" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="incomeDocument">
+        <xsd:sequence>
+            <xsd:any processContents="skip">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <jaxb:property name="content"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:any>
+        </xsd:sequence>
+        <xsd:attribute name="use-signature" type="xsd:boolean" default="false"/>
+        <xsd:attribute name="document-type" type="xsd:token" use="required"/>
+        <xsd:attribute name="guid" type="store:guid"/>
+        <xsd:attribute name="status" type="xsd:string" />
+    </xsd:complexType>
+    <xsd:simpleType name="guid">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <!--    request-->
+
+</xsd:schema>

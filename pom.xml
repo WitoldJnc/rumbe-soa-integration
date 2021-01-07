@@ -204,7 +204,7 @@
                 </dependencies>
                 <executions>
                     <execution>
-                        <id>generate-jaxb</id>
+                        <id>generate-internal-import-service</id>
                         <phase>generate-sources</phase>
                         <configuration>
                             <sourceRoot>${project.build.directory}/generated-sources/cxf</sourceRoot>
@@ -214,6 +214,28 @@
                                     <extraargs>
                                         <extraarg>-wsdlLocation</extraarg>
                                         <extraarg>src/main/resources/wsdl/internal/checkRumbeDocuments.wsdl</extraarg>
+                                        <extraarg>-autoNameResolution</extraarg>
+                                        <extraarg>-impl</extraarg>
+                                    </extraargs>
+                                </wsdlOption>
+                            </wsdlOptions>
+                        </configuration>
+                        <goals>
+                            <goal>wsdl2java</goal>
+                        </goals>
+                    </execution>
+
+                    <execution>
+                        <id>generate-external-store-service</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <sourceRoot>${project.build.directory}/generated-sources/cxf</sourceRoot>
+                            <wsdlOptions>
+                                <wsdlOption>
+                                    <wsdl>${basedir}/src/main/resources/wsdl/external/store-service/storeDocumentService.wsdl</wsdl>
+                                    <extraargs>
+                                        <extraarg>-wsdlLocation</extraarg>
+                                        <extraarg>src/main/resources/wsdl/external/store-service/storeDocumentService.wsdl</extraarg>
                                         <extraarg>-autoNameResolution</extraarg>
                                         <extraarg>-impl</extraarg>
                                     </extraargs>

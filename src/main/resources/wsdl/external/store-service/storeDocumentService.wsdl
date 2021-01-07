@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:store="http://www.rumbe.ru/soa/lc/1_2"
+                  name="checkDocumentService"
+                  targetNamespace="http://www.rumbe.ru/soa/lc/1_2">
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://www.rumbe.ru/soa/lc/1_2"
+                        schemaLocation="storeDocumentService.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+
+    <wsdl:message name="requestMessage">
+        <wsdl:part name="payload" element="store:storeDocReq"/>
+    </wsdl:message>
+    <wsdl:message name="replyMessage">
+        <wsdl:part name="payload" element="store:storeDocResp"/>
+    </wsdl:message>
+
+    <wsdl:portType name="storeDocumentService_ptt">
+        <wsdl:operation name="storeRumbeDoc">
+            <wsdl:input message="store:requestMessage"/>
+            <wsdl:output message="store:replyMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="storeDocumentService_pttBinding" type="store:storeDocumentService_ptt">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="storeRumbeDoc">
+            <soap:operation style="document" soapAction="storeRumbeDoc"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="storeRumbeDocService">
+        <wsdl:port name="storeRumbeDocService_port" binding="store:storeDocumentService_pttBinding">
+            <soap:address location="http://host:port/external/store-service"/>
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>

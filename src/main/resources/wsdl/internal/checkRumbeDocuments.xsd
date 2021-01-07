@@ -64,12 +64,16 @@
                 0 - успешное выполнение
                 1 - ошибка валидации конверта
                 2 - ошибка проверки подписи
+                3 - в процессе выполнения
+                9 - системная ошибка
             </xsd:documentation>
         </xsd:annotation>
         <xsd:restriction base="xsd:string">
             <xsd:enumeration value="0"/>
             <xsd:enumeration value="1"/>
             <xsd:enumeration value="2"/>
+            <xsd:enumeration value="3"/>
+            <xsd:enumeration value="9"/>
         </xsd:restriction>
     </xsd:simpleType>
     <!--    response-->
@@ -108,6 +112,16 @@
                     <xsd:documentation>Тип принимаемого документа</xsd:documentation>
                 </xsd:annotation>
             </xsd:element>
+            <xsd:element name="documentName" type="xsd:string" nillable="false">
+                <xsd:annotation>
+                    <xsd:documentation>Название принимаемого документа</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="employmentType" type="ser:employmentTypeType" nillable="false">
+                <xsd:annotation>
+                    <xsd:documentation>Тип лица</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
             <xsd:element name="creationDateTime" type="xsd:dateTime">
                 <xsd:annotation>
                     <xsd:documentation>Дата и время создания документа</xsd:documentation>
@@ -121,6 +135,19 @@
             <xsd:element name="param" type="ser:paramType" maxOccurs="unbounded"/>
         </xsd:sequence>
     </xsd:complexType>
+    <xsd:simpleType name="employmentTypeType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Тип лица. ИП, физлицо, оао, ооо и т.д. по мере пополнения клиент. базы - будет пополняться.
+                вынести отдельно
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="IP"/>
+            <xsd:enumeration value="OOO"/>
+            <xsd:enumeration value="OAO"/>
+        </xsd:restriction>
+    </xsd:simpleType>
     <xsd:complexType name="paramType">
         <xsd:simpleContent>
             <xsd:extension base="xsd:string">

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lc:storeDocReq xmlns:lc="http://www.rumbe.ru/soa/lc/1_2">
+    <lc:document use-signature="false"
+                 document-type="createProphetBillNotice"
+                 guid="e1392e52-ff97-4502-9959-a4bb510ef41e"
+                 status="Actualized">
+        <tvr:rumbeCloseIPNotice xmlns:tvr="http://www.rumbe.ru/create/create/ProphetBillNotice">
+            <noticeDocTypeLock>BlockID1</noticeDocTypeLock>
+            <noticeTypeStopped>StopOperKass</noticeTypeStopped>
+            <noticeAccNum>03951001890</noticeAccNum>
+            <noticeAccActivate>2020-08-21</noticeAccActivate>
+            <noticeDocumentStatus>Actualized</noticeDocumentStatus>
+            <noticeGuid>e1392e52-ff97-4502-9959-a4bb510ef41e</noticeGuid>
+        </tvr:rumbeCloseIPNotice>
+    </lc:document>
+</lc:storeDocReq>
