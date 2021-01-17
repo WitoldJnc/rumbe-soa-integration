@@ -17,12 +17,13 @@
             <docs:rumbeDocument>
                 <timq:createProphetBillNotice xmlns:timq="http://www.rumbe.ru/create/createProphetBillNotice"
                                               metaType="document" Version="3.0">
-                    <TypeLock>BlockID1</TypeLock>
-                    <TypeStopedOperation>StopOperKass</TypeStopedOperation>
-                    <PersAccountNum>03951001890</PersAccountNum>
-                    <StartDateActive>2020-08-21</StartDateActive>
-                    <SI_TF_DOCSTATE>Actualized</SI_TF_DOCSTATE>
-                    <SI_TF_GUID>e1392e52-ff97-4502-9959-a4bb510ef41e</SI_TF_GUID>
+                    <orgGuid xmlns="">e1392e52-ff97-4501-9951-a4bb510ef41e</orgGuid>
+                    <TypeLock xmlns="">BlockID1</TypeLock>
+                    <TypeStopedOperation xmlns="">StopOperKass</TypeStopedOperation>
+                    <PersAccountNum xmlns="">03951001890</PersAccountNum>
+                    <StartDateActive xmlns="">2020-08-21</StartDateActive>
+                    <SI_TF_DOCSTATE xmlns="">Actualized</SI_TF_DOCSTATE>
+                    <SI_TF_GUID xmlns="">e1392e52-ff97-4502-9959-a4bb510ef41e</SI_TF_GUID>
                 </timq:createProphetBillNotice>
             </docs:rumbeDocument>
         </docs:checkDocumentRequest>

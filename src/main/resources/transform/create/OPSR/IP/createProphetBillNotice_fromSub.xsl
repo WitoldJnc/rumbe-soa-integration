@@ -2,6 +2,7 @@
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:timq="http://www.rumbe.ru/create/createProphetBillNotice"
                 xmlns:tvr="http://www.rumbe.ru/create/createProphetBillNotice"
+                xmlns="http://www.w3.org/2001/XMLSchema"
                 xmlns:lc="http://www.rumbe.ru/soa/lc/1_2"
                 exclude-result-prefixes="xsl timq tvr">
     <xsl:output indent="yes" encoding="UTF-8" method="xml"/>
@@ -23,8 +24,13 @@
                 <xsl:attribute name="status">
                     <xsl:value-of select="//SI_TF_DOCSTATE"/>
                 </xsl:attribute>
-                <tvr:rumbeCloseIPNotice xmlns:tvr="http://www.rumbe.ru/create/createProphetBillNotice">
-
+                <tvr:rumbeCreateIPNotice xmlns:tvr="http://www.rumbe.ru/create/createProphetBillNotice" xmlns="">
+                    <orgGuid>
+                        <xsl:value-of select="//orgGuid"/>
+                    </orgGuid>
+                    <docType>
+                        <xsl:value-of select="'rumbeCreateIPNotice'"/>
+                    </docType>
                     <xsl:if test="//TypeLock">
                         <noticeDocTypeLock>
                             <xsl:value-of select="//TypeLock"/>
@@ -52,16 +58,16 @@
                         </noticeDocumentStatus>
                     </xsl:if>
                     <xsl:if test="//SI_TF_GUID">
-                        <noticeGuid>
+                        <guid>
                             <xsl:value-of select="//SI_TF_GUID"/>
-                        </noticeGuid>
+                        </guid>
                     </xsl:if>
                     <xsl:if test="//LockDocСause">
                         <noticeAccStopCause>
                             <xsl:value-of select="//LockDocСause"/>
                         </noticeAccStopCause>
                     </xsl:if>
-                </tvr:rumbeCloseIPNotice>
+                </tvr:rumbeCreateIPNotice>
             </lc:document>
         </lc:storeDocReq>
     </xsl:template>

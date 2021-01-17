@@ -14,6 +14,7 @@ public class ImportDocumentRoute extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
+
         Namespaces ns = new Namespaces("doc", "http://www.rumbe.ru/internal/services/checkDocumentService/docs");
                 ns.add("lc", "http://www.rumbe.ru/soa/lc/1_2");
 
@@ -126,13 +127,8 @@ public class ImportDocumentRoute extends RouteBuilder {
 
                 .choice()
                     .when(simple("${property.documentType} == 'create_bill'"))
-                        .to("direct:toLocalDocumentTransfrom")
-                        .setBody(exchangeProperty("storeReq"))
-                        .process(x -> {
-                            x.getIn();
-                        })
-                        .to("createBillProcessor")
-                        .to(DIRECT_STORE_REQUEST)
+                        .to("direct:createBillRoute")
+                        .to("direct:toStore")
                     .when(simple("${property.documentType} == 'close_bill'"))
 //                        .to("direct:toTransferDocTransfrom")
                         .setBody(exchangeProperty("transferDocReq"))
@@ -145,6 +141,20 @@ public class ImportDocumentRoute extends RouteBuilder {
                 .endChoice()
                 .end();
 
+        from("direct:createBillRoute")
+                .routeId("CreateBillRoute")
+                .to("direct:toLocalDocumentTransfrom")
+                .setBody(exchangeProperty("transformedDocument"))
+                .convertBodyTo(String.class)
+                .to("createBillProcessor");
+
+
+        from("direct:toStore")
+                .routeId("ToStoreReq")
+                .setBody(exchangeProperty("storeReq"))
+                .toD("xslt:transform/toSoapEnvelope.xsl")
+                .to(DIRECT_STORE_REQUEST) //wsdl/external/store-service/storeDocumentService.wsdl
+                .end();
 
         from("direct:toLocalDocumentTransfrom")
                 .routeId("ToLocalDocTrans")
@@ -153,8 +163,12 @@ public class ImportDocumentRoute extends RouteBuilder {
                         "${property.clientType}/${property.documentName}_fromSub.xsl"))
                 .toD("xslt:${property.transfromPath}")
                 .setProperty("storeReq", bodyAs(String.class))
+                .setProperty("docType", xpath("//docType/text()", String.class))
+                .setProperty("docStatus", ns.xpath("//lc:document[1]/@status", String.class))
                 .setProperty("transformedDocument", ns.xpath("//lc:storeDocReq/lc:document/*[1]"))
                 .end();
 
     }
+
+
 }

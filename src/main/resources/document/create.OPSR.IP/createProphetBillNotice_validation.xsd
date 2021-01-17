@@ -9,6 +9,8 @@
         <complexContent>
             <extension base="cm:tDocument">
                 <sequence>
+                    <element name="orgGuid" type="string"/>
+                    <element name="docType" type="string"/>
                     <element name="TypeLock" type="cm:tName2000">
                         <annotation>
                             <appinfo>
