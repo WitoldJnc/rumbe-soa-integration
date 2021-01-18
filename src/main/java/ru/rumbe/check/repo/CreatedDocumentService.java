@@ -4,6 +4,6 @@ import java.util.Optional;
 
 public interface CreatedDocumentService {
 
-    Optional<CreatedDocument> getLastDocument(String table, String guid, Class tClass);
+    Optional<RumbeDocument> getLastDocument(String table, String guid, Class tClass);
 
 }

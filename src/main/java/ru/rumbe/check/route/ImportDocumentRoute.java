@@ -63,7 +63,6 @@ public class ImportDocumentRoute extends RouteBuilder {
                 .to("direct:checkDocumentMain")
                 .end();
 
-
         /**
          * главный роут проверки документа.
          * 1. отправить синхронный ответ о статусе обработки
@@ -124,15 +123,15 @@ public class ImportDocumentRoute extends RouteBuilder {
          */
         from("direct:billLogicMain")
                 .routeId("billLogicMain")
-
                 .choice()
                     .when(simple("${property.documentType} == 'create_bill'"))
+                        .to("direct:toLocalDocumentTransfrom")
+                        .setBody(exchangeProperty("transformedDocument"))
                         .to("direct:createBillRoute")
                         .to("direct:toStore")
                     .when(simple("${property.documentType} == 'close_bill'"))
-//                        .to("direct:toTransferDocTransfrom")
-                        .setBody(exchangeProperty("transferDocReq"))
-                        .to("closeBillProcessor")
+                        .to("direct:closeBillRoute")
+//                        .to("xslt:transform/transferDocumentRequest.xsl")
                         .to(DIRECT_TRANSFER_REQUEST)
                     .otherwise()
                         .setProperty("statusCode", simple(ResponseStatus.INCOME_MESSAGE_ERROR.getCode()))
@@ -140,14 +139,15 @@ public class ImportDocumentRoute extends RouteBuilder {
                         .throwException(new IllegalArgumentException("document type is not supported"))
                 .endChoice()
                 .end();
+        from("direct:closeBillRoute")
+                .routeId("CloseBillRoute")
+                .to("closeBillProcessor");
 
         from("direct:createBillRoute")
                 .routeId("CreateBillRoute")
-                .to("direct:toLocalDocumentTransfrom")
-                .setBody(exchangeProperty("transformedDocument"))
+
                 .convertBodyTo(String.class)
                 .to("createBillProcessor");
-
 
         from("direct:toStore")
                 .routeId("ToStoreReq")
@@ -163,12 +163,10 @@ public class ImportDocumentRoute extends RouteBuilder {
                         "${property.clientType}/${property.documentName}_fromSub.xsl"))
                 .toD("xslt:${property.transfromPath}")
                 .setProperty("storeReq", bodyAs(String.class))
-                .setProperty("docType", xpath("//docType/text()", String.class))
                 .setProperty("docStatus", ns.xpath("//lc:document[1]/@status", String.class))
                 .setProperty("transformedDocument", ns.xpath("//lc:storeDocReq/lc:document/*[1]"))
                 .end();
 
     }
-
 
 }

@@ -6,12 +6,11 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.rumbe.check.repo.CreatedDocument;
+import ru.rumbe.check.repo.RumbeDocument;
 import ru.rumbe.check.repo.CreatedDocumentService;
 import ru.rumbe.check.repo.CreatedDocumentsManagement;
-import ru.rumbe.check.utils.CreateDocumentTypes;
-import ru.rumbe.check.utils.CreatedDocumentFactory;
-import ru.rumbe.check.utils.DocumentStatusTypes;
+import ru.rumbe.check.utils.ExternalDocType;
+import ru.rumbe.check.utils.RubmeDocumentFactory;
 
 import java.util.Optional;
 
@@ -22,7 +21,7 @@ import static ru.rumbe.check.utils.DocumentStatusTypes.*;
 public class CreateBillProcessor implements Processor {
 
     @Autowired
-    private CreatedDocumentFactory factory;
+    private RubmeDocumentFactory factory;
 
     @Autowired
     private CreatedDocumentsManagement createdDocumentsManagement;
@@ -38,16 +37,16 @@ public class CreateBillProcessor implements Processor {
      */
     @Override
     public void process(Exchange exchange) throws Exception {
-        val docType = exchange.getProperty("docType", CreateDocumentTypes.class);
+        val externalDocType = exchange.getProperty("documentName", ExternalDocType.class);
         final String guid = exchange.getProperty("guid", String.class);
         final String docStatus = exchange.getProperty("docStatus", String.class);
 
-        Class<? extends CreatedDocument> clazz = factory.createdDocument(docType).getClass();
+        Class<? extends RumbeDocument> clazz = factory.createdDocument(externalDocType).getClass();
 
-        CreatedDocument record = exchange.getIn().getBody(clazz);
+        RumbeDocument record = exchange.getIn().getBody(clazz);
         log.debug("record type: " + record.getType());
 
-        Optional<CreatedDocument> lastDocument = createdDocumentService.getLastDocument(record.getTableName(), guid, clazz);
+        Optional<RumbeDocument> lastDocument = createdDocumentService.getLastDocument(record.getTableName(), guid, clazz);
 
         if ((docStatus.equals(Created.name()) || docStatus.equals(Formed.name())) && !lastDocument.isPresent()) {
             createdDocumentsManagement.save(record);

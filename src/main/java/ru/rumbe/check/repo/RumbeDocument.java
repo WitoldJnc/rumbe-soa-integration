@@ -1,10 +1,10 @@
 package ru.rumbe.check.repo;
 
-import ru.rumbe.check.utils.CreateDocumentTypes;
 
+import ru.rumbe.check.utils.InternalDocType;
 
-public interface CreatedDocument {
-    CreateDocumentTypes getType();
+public interface RumbeDocument {
+    InternalDocType getType();
 
     String getTableName();
 

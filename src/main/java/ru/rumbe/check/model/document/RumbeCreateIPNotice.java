@@ -1,10 +1,10 @@
-package ru.rumbe.check.model.create;
+package ru.rumbe.check.model.document;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.rumbe.check.model.BaseCreatedEntity;
-import ru.rumbe.check.repo.CreatedDocument;
-import ru.rumbe.check.utils.CreateDocumentTypes;
+import ru.rumbe.check.repo.RumbeDocument;
+import ru.rumbe.check.utils.InternalDocType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Data
 @Table(name = "pim_ip_notice", schema = "documents")
 @Entity
-public class RumbeCreateIPNotice extends BaseCreatedEntity implements CreatedDocument {
+public class RumbeCreateIPNotice extends BaseCreatedEntity implements RumbeDocument {
 
     @XmlElement(name = "orgGuid")
     @NotNull
@@ -45,8 +45,8 @@ public class RumbeCreateIPNotice extends BaseCreatedEntity implements CreatedDoc
     private LocalDateTime updDt = LocalDateTime.now();
 
     @Override
-    public CreateDocumentTypes getType() {
-        return CreateDocumentTypes.rumbeCreateIPNotice;
+    public InternalDocType getType() {
+        return InternalDocType.rumbeCreateIPNotice;
     }
 
     @Override
