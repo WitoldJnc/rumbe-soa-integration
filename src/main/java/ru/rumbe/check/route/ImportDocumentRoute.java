@@ -5,6 +5,8 @@ import org.apache.camel.builder.xml.Namespaces;
 import org.springframework.stereotype.Component;
 import ru.rumbe.check.model.ResponseStatus;
 
+import java.util.UUID;
+
 import static ru.rumbe.check.route.ExternalRoutes.DIRECT_STORE_REQUEST;
 import static ru.rumbe.check.route.ExternalRoutes.DIRECT_TRANSFER_REQUEST;
 
@@ -16,7 +18,8 @@ public class ImportDocumentRoute extends RouteBuilder {
 
 
         Namespaces ns = new Namespaces("doc", "http://www.rumbe.ru/internal/services/checkDocumentService/docs");
-                ns.add("lc", "http://www.rumbe.ru/soa/lc/1_2");
+                ns.add("lc", "http://www.rumbe.ru/soa/lc/1_2/lifecycle");
+                ns.add("tr", "http://www.rumbe.ru/soa/lc/1_2/lifecycle");
 
         onException(Exception.class)
                 .handled(true)
@@ -128,10 +131,13 @@ public class ImportDocumentRoute extends RouteBuilder {
                         .to("direct:toLocalDocumentTransfrom")
                         .setBody(exchangeProperty("transformedDocument"))
                         .to("direct:createBillRoute")
-                        .to("direct:toStore")
-                    .when(simple("${property.documentType} == 'close_bill'"))
+                        .setBody(exchangeProperty("storeReq"))
+                        .to(DIRECT_STORE_REQUEST) //wsdl/external/store-service/documentLifeCycleService.wsdl
+                .when(simple("${property.documentType} == 'close_bill'"))
                         .to("direct:closeBillRoute")
-//                        .to("xslt:transform/transferDocumentRequest.xsl")
+                        .setProperty("packageId", constant(UUID.randomUUID().toString()))
+                        .setBody(exchangeProperty("income"))
+                        .to("xslt:transform/transferDocumentRequest.xsl")
                         .to(DIRECT_TRANSFER_REQUEST)
                     .otherwise()
                         .setProperty("statusCode", simple(ResponseStatus.INCOME_MESSAGE_ERROR.getCode()))
@@ -139,22 +145,21 @@ public class ImportDocumentRoute extends RouteBuilder {
                         .throwException(new IllegalArgumentException("document type is not supported"))
                 .endChoice()
                 .end();
+
+        /**
+         * @CloseBillRoute
+         * @CreateBillRoute
+         * вынесены в отдельный роут для удобного мока целого роута в тесте
+         */
         from("direct:closeBillRoute")
                 .routeId("CloseBillRoute")
+                .convertBodyTo(String.class)
                 .to("closeBillProcessor");
 
         from("direct:createBillRoute")
                 .routeId("CreateBillRoute")
-
                 .convertBodyTo(String.class)
                 .to("createBillProcessor");
-
-        from("direct:toStore")
-                .routeId("ToStoreReq")
-                .setBody(exchangeProperty("storeReq"))
-                .toD("xslt:transform/toSoapEnvelope.xsl")
-                .to(DIRECT_STORE_REQUEST) //wsdl/external/store-service/storeDocumentService.wsdl
-                .end();
 
         from("direct:toLocalDocumentTransfrom")
                 .routeId("ToLocalDocTrans")

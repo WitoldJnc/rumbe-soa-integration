@@ -44,12 +44,16 @@ public class ImportDocumentRouteTest extends CamelTestSupport {
     @EndpointInject(uri = "mock:direct:createBillRoute")
     private MockEndpoint createBillProcessorRoute;
 
+    @EndpointInject(uri = "mock:direct:loseBillRoute")
+    private MockEndpoint closeBillProcessorRoute;
+
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
 //        camelContext.addRegisterEndpointCallback(new InterceptSendToMockEndpointStrategy("direct:log-to-kafka", true));
         mockEnpointToInject("billLogicMain", "direct:createBillRoute", "mock:direct:createBillRoute");
+        mockEnpointToInject("billLogicMain", "direct:closeBillRoute", "mock:direct:closeBillRoute");
         startCamelContext();
         camelContext.getRouteDefinition("ImportDocumentService-SOAP").adviceWith(camelContext, new AdviceWithRouteBuilder() {
             @Override
@@ -58,7 +62,8 @@ public class ImportDocumentRouteTest extends CamelTestSupport {
             }
         });
 
-        mockEndpoint("direct:createBillRoute", "test");
+        mockEndpoint("direct:createBillRoute", "");
+        mockEndpoint("direct:closeBillRoute", "");
 
     }
 

@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
                   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-                  xmlns:store="http://www.rumbe.ru/soa/lc/1_2"
+                  xmlns:store="http://www.rumbe.ru/soa/lc/1_2/lifecycle"
                   name="checkDocumentService"
-                  targetNamespace="http://www.rumbe.ru/soa/lc/1_2">
+                  targetNamespace="http://www.rumbe.ru/soa/lc/1_2/lifecycle">
     <wsdl:types>
         <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-            <xsd:import namespace="http://www.rumbe.ru/soa/lc/1_2"
+            <xsd:import namespace="http://www.rumbe.ru/soa/lc/1_2/lifecycle"
                         schemaLocation="storeDocumentService.xsd"/>
         </xsd:schema>
     </wsdl:types>
@@ -26,7 +26,7 @@
     </wsdl:portType>
 
     <wsdl:binding name="storeDocumentService_pttBinding" type="store:storeDocumentService_ptt">
-        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
         <wsdl:operation name="storeRumbeDoc">
             <soap:operation style="document" soapAction="storeRumbeDoc"/>
             <wsdl:input>

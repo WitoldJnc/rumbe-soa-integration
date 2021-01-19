@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<xsd:schema targetNamespace="http://www.rumbe.ru/soa/lc/1_2"
+<xsd:schema targetNamespace="http://www.rumbe.ru/soa/lc/1_2/lifecycle"
             elementFormDefault="qualified"
-            jaxb:version="2.1" version="1.0" xmlns="http://www.rumbe.ru/soa/lc/1_2"
+            jaxb:version="2.1" version="1.0" xmlns="http://www.rumbe.ru/soa/lc/1_2/lifecycle"
             xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-            xmlns:store="http://www.rumbe.ru/soa/lc/1_2"
+            xmlns:store="http://www.rumbe.ru/soa/lc/1_2/lifecycle"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
     <xsd:element name="storeDocReq" type="store:storeDocReqType"/>

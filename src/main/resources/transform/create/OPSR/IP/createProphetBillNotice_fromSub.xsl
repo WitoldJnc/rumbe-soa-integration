@@ -3,7 +3,7 @@
                 xmlns:timq="http://www.rumbe.ru/create/createProphetBillNotice"
                 xmlns:tvr="http://www.rumbe.ru/create/createProphetBillNotice"
                 xmlns="http://www.w3.org/2001/XMLSchema"
-                xmlns:lc="http://www.rumbe.ru/soa/lc/1_2"
+                xmlns:lc="http://www.rumbe.ru/soa/lc/1_2/lifecycle"
                 exclude-result-prefixes="xsl timq tvr">
     <xsl:output indent="yes" encoding="UTF-8" method="xml"/>
     <xsl:template match="/">

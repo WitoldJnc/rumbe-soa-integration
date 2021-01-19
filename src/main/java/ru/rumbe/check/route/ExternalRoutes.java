@@ -27,14 +27,20 @@ public class ExternalRoutes extends RouteBuilder {
 
         from("direct:transferRequestProcess")
                 .routeId("TransferRequestProcess-{{routeversion}}")
-                .log("here");
+                .to("xslt:transform/toSoapEnvelope.xsl")
+                .setHeader(Exchange.CHARSET_NAME, constant("UTF-8"))
+                .setHeader("SOAPAction", constant("transferRumbeDoc"))
+                .setHeader(CxfConstants.OPERATION_NAMESPACE, constant("http://www.rumbe.ru/soa/lc/1_3/transfer"))
+                .to("cxf:bean:transferDocEndpoint")
+                .convertBodyTo(String.class)
+                .to("log:end?level=INFO&showAll=true&multiline=true");
 
         from("direct:storeRequestProcess")
                 .routeId("StoreRequestProcess-{{routeversion}}")
                 .to("xslt:transform/toSoapEnvelope.xsl")
                 .setHeader(Exchange.CHARSET_NAME, constant("UTF-8"))
-                .setHeader("SOAPAction", constant("storeRequest"))
-                .setHeader(CxfConstants.OPERATION_NAMESPACE, constant("http://www.rumbe.ru/soa/lc/1_2"))
+                .setHeader("SOAPAction", constant("storeRumbeDoc"))
+                .setHeader(CxfConstants.OPERATION_NAMESPACE, constant("http://www.rumbe.ru/soa/lc/1_2/lifecycle"))
                 .to("cxf:bean:storeDocEndpoint")
                 .convertBodyTo(String.class)
                 .to("log:end?level=INFO&showAll=true&multiline=true");
