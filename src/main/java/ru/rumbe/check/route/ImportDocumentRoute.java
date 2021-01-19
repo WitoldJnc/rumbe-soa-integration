@@ -2,6 +2,7 @@ package ru.rumbe.check.route;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.xml.Namespaces;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.rumbe.check.model.ResponseStatus;
 import ru.rumbe.check.utils.MessageType;
@@ -14,6 +15,12 @@ import static ru.rumbe.check.route.ExternalRoutes.DIRECT_TRANSFER_REQUEST;
 
 @Component
 public class ImportDocumentRoute extends RouteBuilder {
+
+    @Value("${elk.index.id}")
+    String elkIndexId;
+    @Value("${elk.index.name}")
+    String elkIndexName;
+
     @Override
     public void configure() throws Exception {
 
@@ -35,8 +42,9 @@ public class ImportDocumentRoute extends RouteBuilder {
                     .when(simple("${property.statusCode} == null && ${property.statusDetail} == null"))
                         .setProperty("statusCode", simple(ResponseStatus.SYSTEM_ERROR.getCode()))
                         .setProperty("statusDetail", simple(ResponseStatus.SYSTEM_ERROR.getDetail()))
-                .log("exception:  ${body}")
-                //todo log exception to kafka
+                .end()
+                    .setProperty("request", bodyAs(String.class))
+                    .to("direct:exception-log-to-kafka")
                 .to("xslt:transform/syncResponse.xsl");
 
         /**
@@ -51,13 +59,11 @@ public class ImportDocumentRoute extends RouteBuilder {
 
         /**
          * роут входяшего сообщения по соапу. отправляет в промежуточный роут для фетча данных из вход. сообщ
-         * todo добавить лог в кафку входящего сообщения
          */
         from("cxf:bean:importDocumentService")
                 .routeId("ImportDocumentService-SOAP")
-                .setHeader("Message-Type", constant(MessageType.SOAP.name()))
                 .convertBodyTo(String.class)
-                .log("${body}")
+                .setHeader("Message-Type", constant(MessageType.SOAP.name()))
                 .to("direct:incomeDocumentProcess")
                 .end();
 
@@ -66,7 +72,6 @@ public class ImportDocumentRoute extends RouteBuilder {
          */
         from("direct:incomeDocumentProcess")
                 .routeId("FetchData")
-                //todo log to kafka income message
                 .setProperty("income", bodyAs(String.class))
                 .setProperty("guid", ns.xpath("//doc:header/doc:guid/text()", String.class))
                 .setProperty("documentType", ns.xpath("//doc:header/doc:documentType/text()", String.class))
@@ -75,6 +80,9 @@ public class ImportDocumentRoute extends RouteBuilder {
                 .setProperty("clientType", ns.xpath("//doc:header/doc:employmentType/text()", String.class))
                 .setProperty("code", ns.xpath("//doc:header/doc:docParams/doc:param[@name='Code']/@value", String.class))
                 .to("direct:checkDocumentMain")
+                    .setProperty("request", bodyAs(String.class))
+                    .setProperty("routeId", simple("${routeId}" + " extract properties"))
+                    .to("direct:log-to-kafka")
                 .end();
 
         /**
@@ -119,8 +127,12 @@ public class ImportDocumentRoute extends RouteBuilder {
                 .setBody(exchangeProperty("document"))
                 .convertBodyTo(String.class)
                 .doTry()
+                    .   setProperty("request", bodyAs(String.class))
+                    .log("before validation")
                     .toD("validator:${property.validationPath}")
-                    .log("${property.guid} : validation success")
+                    .setProperty("response", constant("Validate success."))
+                        .setProperty("routeId", simple("${routeId}" + " validation"))
+                        .to("direct:log-to-kafka")
                 //todo log to kafka validation status
                 .doCatch(Exception.class)
                     .setProperty("statusCode", simple(ResponseStatus.VALIDATION_ERROR.getCode()))
@@ -141,7 +153,7 @@ public class ImportDocumentRoute extends RouteBuilder {
                     .when(simple("${property.documentType} == 'create_bill'"))
                         .to("direct:toLocalDocumentTransfrom")
                         .setBody(exchangeProperty("transformedDocument"))
-                        .to("direct:createBillRoute")
+//                        .to("direct:createBillRoute")
                         .setBody(exchangeProperty("storeReq"))
                         .to(DIRECT_STORE_REQUEST) //wsdl/external/store-service/documentLifeCycleService.wsdl
                 .when(simple("${property.documentType} == 'close_bill'"))
@@ -149,7 +161,7 @@ public class ImportDocumentRoute extends RouteBuilder {
                         .setProperty("packageId", constant(UUID.randomUUID().toString()))
                         .setBody(exchangeProperty("income"))
                         .to("xslt:transform/transferDocumentRequest.xsl")
-                        .to(DIRECT_TRANSFER_REQUEST)
+                        .to(DIRECT_TRANSFER_REQUEST)  //wsdl/external/store-service/transferDocumentService.wsdl
                     .otherwise()
                         .setProperty("statusCode", simple(ResponseStatus.INCOME_MESSAGE_ERROR.getCode()))
                         .setProperty("statusDetail", simple(ResponseStatus.INCOME_MESSAGE_ERROR.getDetail()))
@@ -165,19 +177,31 @@ public class ImportDocumentRoute extends RouteBuilder {
         from("direct:closeBillRoute")
                 .routeId("CloseBillRoute")
                 .convertBodyTo(String.class)
-                .to("closeBillProcessor");
+                    .setProperty("request", bodyAs(String.class))
+                .to("closeBillProcessor")
+                    .setProperty("response", constant("close bill success."))
+                    .setProperty("routeId", simple("${routeId}"))
+                    .to("direct:log-to-kafka");
 
         from("direct:createBillRoute")
                 .routeId("CreateBillRoute")
                 .convertBodyTo(String.class)
-                .to("createBillProcessor");
+                    .setProperty("request", bodyAs(String.class))
+                .to("createBillProcessor")
+                    .setProperty("response", constant("create bill success."))
+                    .setProperty("routeId", simple("${routeId}"))
+                    .to("direct:log-to-kafka");
 
         from("direct:toLocalDocumentTransfrom")
                 .routeId("ToLocalDocTrans")
                 .setBody(exchangeProperty("document"))
+                    .setProperty("request", bodyAs(String.class))
                 .setProperty("transfromPath", simple("transform/create/${property.subSystem}/" +
                         "${property.clientType}/${property.documentName}_fromSub.xsl"))
                 .toD("xslt:${property.transfromPath}")
+                    .setProperty("routeId", simple("${routeId}" + " xslt to internal document"))
+                    .setProperty("response", bodyAs(String.class))
+                    .to("direct:log-to-kafka")
                 .setProperty("storeReq", bodyAs(String.class))
                 .setProperty("docStatus", ns.xpath("//lc:document[1]/@status", String.class))
                 .setProperty("transformedDocument", ns.xpath("//lc:storeDocReq/lc:document/*[1]"))

@@ -56,7 +56,11 @@ public class ExternalRoutes extends RouteBuilder {
                 .setHeader(Exchange.CHARSET_NAME, constant("UTF-8"))
                 .setHeader("SOAPAction", constant("transferRumbeDoc"))
                 .setHeader(CxfConstants.OPERATION_NAMESPACE, constant("http://www.rumbe.ru/soa/lc/1_3/transfer"))
+                    .setProperty("request", bodyAs(String.class))
                 .to("cxf:bean:transferDocEndpoint")
+                    .setProperty("response", bodyAs(String.class))
+                    .setProperty("routeId", simple("${routeId}" + " transferDoc"))
+                    .to("direct:log-to-kafka")
                 .convertBodyTo(String.class)
                 .to("log:end?level=INFO&showAll=true&multiline=true");
 
@@ -65,7 +69,11 @@ public class ExternalRoutes extends RouteBuilder {
                 .setHeader(Exchange.CHARSET_NAME, constant("UTF-8"))
                 .setHeader("SOAPAction", constant("storeRumbeDoc"))
                 .setHeader(CxfConstants.OPERATION_NAMESPACE, constant("http://www.rumbe.ru/soa/lc/1_2/lifecycle"))
+                    .setProperty("request", bodyAs(String.class))
                 .to("cxf:bean:storeDocEndpoint")
+                    .setProperty("response", bodyAs(String.class))
+                    .setProperty("routeId", simple("${routeId}" + " storeDoc"))
+                    .to("direct:log-to-kafka")
                 .convertBodyTo(String.class)
                 .to("log:end?level=INFO&showAll=true&multiline=true");
     }
