@@ -4,6 +4,7 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.xml.Namespaces;
 import org.springframework.stereotype.Component;
 import ru.rumbe.check.model.ResponseStatus;
+import ru.rumbe.check.utils.MessageType;
 
 import java.util.UUID;
 
@@ -39,12 +40,22 @@ public class ImportDocumentRoute extends RouteBuilder {
                 .to("xslt:transform/syncResponse.xsl");
 
         /**
+         * роут для приема сообщений из топика кафки
+         */
+        from("{{kafka-import-document-url}}")
+                .routeId("ImportDocumentService-KAFKA")
+                .convertBodyTo(String.class)
+                .setHeader("Message-Type", constant(MessageType.KAFKA.name()))
+                .to("direct:incomeDocumentProcess")
+                .end();
+
+        /**
          * роут входяшего сообщения по соапу. отправляет в промежуточный роут для фетча данных из вход. сообщ
          * todo добавить лог в кафку входящего сообщения
-         * todo добавить прием сообщения из топика кафки в отдельный роут
          */
         from("cxf:bean:importDocumentService")
                 .routeId("ImportDocumentService-SOAP")
+                .setHeader("Message-Type", constant(MessageType.SOAP.name()))
                 .convertBodyTo(String.class)
                 .log("${body}")
                 .to("direct:incomeDocumentProcess")

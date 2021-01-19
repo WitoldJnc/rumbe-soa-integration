@@ -7,6 +7,7 @@ import ru.rumbe.internal.services.checkdocumentservice.docs.EmploymentTypeType;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
 @Component
 @Slf4j
@@ -16,6 +17,7 @@ public class CloseBillServiceImpl implements CloseBillService {
     protected EntityManager em;
 
     @Override
+    @Transactional
     public void closeBillByGuid(String table, EmploymentTypeType clientType, String guid) {
         final String query = String.format("UPDATE documents.%1$s dc\n" +
                 "SET current_status = 'Closed'\n" +
