@@ -12,7 +12,6 @@ import java.util.UUID;
 import static ru.rumbe.check.route.ExternalRoutes.DIRECT_STORE_REQUEST;
 import static ru.rumbe.check.route.ExternalRoutes.DIRECT_TRANSFER_REQUEST;
 
-
 @Component
 public class ImportDocumentRoute extends RouteBuilder {
 
@@ -127,7 +126,7 @@ public class ImportDocumentRoute extends RouteBuilder {
                 .setBody(exchangeProperty("document"))
                 .convertBodyTo(String.class)
                 .doTry()
-                    .   setProperty("request", bodyAs(String.class))
+                    .setProperty("request", bodyAs(String.class))
                     .log("before validation")
                     .toD("validator:${property.validationPath}")
                     .setProperty("response", constant("Validate success."))
@@ -153,7 +152,7 @@ public class ImportDocumentRoute extends RouteBuilder {
                     .when(simple("${property.documentType} == 'create_bill'"))
                         .to("direct:toLocalDocumentTransfrom")
                         .setBody(exchangeProperty("transformedDocument"))
-//                        .to("direct:createBillRoute")
+                        .to("direct:createBillRoute")
                         .setBody(exchangeProperty("storeReq"))
                         .to(DIRECT_STORE_REQUEST) //wsdl/external/store-service/documentLifeCycleService.wsdl
                 .when(simple("${property.documentType} == 'close_bill'"))

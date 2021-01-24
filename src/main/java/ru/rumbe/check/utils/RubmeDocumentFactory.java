@@ -16,6 +16,9 @@ public class RubmeDocumentFactory {
             case createProphetBillNotice:
                 document = new RumbeCreateIPNotice();
                 break;
+            case KRK:
+                document = new RumbeCloseOAOKRK();
+                break;
         }
 
         return document;

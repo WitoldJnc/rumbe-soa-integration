@@ -12,13 +12,9 @@ import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Data
-@Table(name = "pim_krk", schema = "documents")
-@Entity
 public class RumbeCloseOAOKRK extends BaseClosedEntity implements RumbeDocument {
-
     private String greenOprotedStatus;
     private LocalDateTime updDt = LocalDateTime.now();
-
 
     @Override
     public InternalDocType getType() {

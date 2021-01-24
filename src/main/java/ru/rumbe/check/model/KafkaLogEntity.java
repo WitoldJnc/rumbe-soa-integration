@@ -1,11 +1,13 @@
 package ru.rumbe.check.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.rumbe.check.utils.LogType;
 
 @Data
 @NoArgsConstructor
+@JsonInclude
 public class KafkaLogEntity {
     private String elkIndexName;
     private String documentType;

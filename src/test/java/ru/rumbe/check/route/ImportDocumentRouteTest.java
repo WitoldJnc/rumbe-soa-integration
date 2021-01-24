@@ -51,7 +51,7 @@ public class ImportDocumentRouteTest extends CamelTestSupport {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-//        camelContext.addRegisterEndpointCallback(new InterceptSendToMockEndpointStrategy("direct:log-to-kafka", true));
+        camelContext.addRegisterEndpointCallback(new InterceptSendToMockEndpointStrategy("direct:log-to-kafka", true));
         mockEnpointToInject("billLogicMain", "direct:createBillRoute", "mock:direct:createBillRoute");
         mockEnpointToInject("billLogicMain", "direct:closeBillRoute", "mock:direct:closeBillRoute");
         startCamelContext();
