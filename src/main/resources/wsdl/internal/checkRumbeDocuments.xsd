@@ -1,0 +1,190 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:ser="http://www.rumbe.ru/internal/services/checkDocumentService/docs"
+            xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+            targetNamespace="http://www.rumbe.ru/internal/services/checkDocumentService/docs"
+            elementFormDefault="qualified"
+            jxb:version="2.1">
+    <xsd:element name="checkDocumentRequest" type="ser:checkDocumentRequestType"/>
+    <xsd:element name="checkDocumentResponse" type="ser:checkDocumentResponseType"/>
+
+    <!--    response-->
+    <xsd:complexType name="checkDocumentResponseType">
+        <xsd:sequence>
+            <xsd:element name="guid" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>GUID документа</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="responseDateTime" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:documentation>Дата и время формирования response-сообщения</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="responseStatus" type="ser:responseStatusType"/>
+            <xsd:element name="params" type="ser:paramType" minOccurs="0"/>
+        </xsd:sequence>
+        <xsd:attribute name="versionId" use="required" fixed="3.5">
+            <xsd:annotation>
+                <xsd:documentation>Версия типа обмена</xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name="responseStatusType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Статус обработки.
+                code - код в соответствии с перечислением,
+                statusMessage - краткое описание статуса
+                statusDetail - подробное описание статуса
+                documentGuid - guid созданного документа
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="code" type="ser:responseStatusCodeType">
+                <xsd:annotation>
+                    <xsd:documentation>Код статуса</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="message" type="xsd:string" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Сообщение об ошибке</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="detail" type="xsd:string" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Дополнительное описание статуса</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="responseStatusCodeType">
+        <xsd:annotation>
+            <xsd:documentation>
+                0 - успешное выполнение
+                1 - ошибка валидации конверта
+                2 - ошибка проверки подписи
+                3 - в процессе выполнения
+                9 - системная ошибка
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="0"/>
+            <xsd:enumeration value="1"/>
+            <xsd:enumeration value="2"/>
+            <xsd:enumeration value="3"/>
+            <xsd:enumeration value="9"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <!--    response-->
+
+    <!--    request-->
+    <xsd:complexType name="checkDocumentRequestType">
+        <xsd:sequence>
+            <xsd:element name="header" type="ser:checkDocumentHeaderType"/>
+            <xsd:element name="rumbeDocument" type="ser:rumbeDocumentType">
+                <xsd:annotation>
+                    <xsd:documentation>Передаваемый документ</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="signature" type="ser:rumbeSignType" minOccurs="0"/>
+        </xsd:sequence>
+        <xsd:attribute name="versionId" use="required" fixed="3.5">
+            <xsd:annotation>
+                <xsd:documentation>Версия типа обмена</xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name="checkDocumentHeaderType">
+        <xsd:sequence>
+            <xsd:element name="guid" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>GUID принимаемого документа</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="subSystemFrom" type="xsd:string" nillable="false">
+                <xsd:annotation>
+                    <xsd:documentation>С какой подсистемы пришло сообщение</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="documentType" type="xsd:string" nillable="false">
+                <xsd:annotation>
+                    <xsd:documentation>Тип принимаемого документа</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="documentName" type="xsd:string" nillable="false">
+                <xsd:annotation>
+                    <xsd:documentation>Название принимаемого документа</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="employmentType" type="ser:employmentTypeType" nillable="false">
+                <xsd:annotation>
+                    <xsd:documentation>Тип лица</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="creationDateTime" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:documentation>Дата и время создания документа</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="docParams" type="ser:docParamsType" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="docParamsType">
+        <xsd:sequence>
+            <xsd:element name="param" type="ser:paramType" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="employmentTypeType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Тип лица. ИП, физлицо, оао, ооо и т.д. по мере пополнения клиент. базы - будет пополняться.
+                вынести отдельно
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="IP"/>
+            <xsd:enumeration value="OOO"/>
+            <xsd:enumeration value="OAO"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="paramType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="name" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>Наименование параметра</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="value" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo>
+                            <jxb:property name="valueAttribute"/>
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="rumbeDocumentType">
+        <xsd:sequence>
+            <xsd:any processContents="skip" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="rumbeSignType">
+        <xsd:sequence>
+            <xsd:element name="rumbeDocSign" type="ser:rumbeDocSignType" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="rumbeDocSignType">
+        <xsd:sequence>
+            <xsd:element name="signature" type="xsd:base64Binary" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Подпись вложения в кодировке BASE64</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <!--    request-->
+
+</xsd:schema>
