@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:transfer="http://www.rumbe.ru/soa/lc/1_3/transfer"
+                  name="checkDocumentService"
+                  targetNamespace="http://www.rumbe.ru/soa/lc/1_3/transfer">
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://www.rumbe.ru/soa/lc/1_3/transfer"
+                        schemaLocation="transferDocService.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+
+    <wsdl:message name="requestMessage">
+        <wsdl:part name="payload" element="transfer:transferDocReq"/>
+    </wsdl:message>
+    <wsdl:message name="replyMessage">
+        <wsdl:part name="payload" element="transfer:transferDocResp"/>
+    </wsdl:message>
+
+    <wsdl:portType name="transferDocumentService_ptt">
+        <wsdl:operation name="transferRumbeDoc">
+            <wsdl:input message="transfer:requestMessage"/>
+            <wsdl:output message="transfer:replyMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="transferDocumentService_pttBinding" type="transfer:transferDocumentService_ptt">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="transferRumbeDoc">
+            <soap:operation style="document" soapAction="transferRumbeDoc"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="transferRumbeDocService">
+        <wsdl:port name="transferRumbeDocService_port" binding="transfer:transferDocumentService_pttBinding">
+            <soap:address location="http://host:port/external/store-service"/>
+        </wsdl:port>
+    </wsdl:service>
+
+
+</wsdl:definitions>

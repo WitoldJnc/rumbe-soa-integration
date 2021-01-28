@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Header/><soapenv:Body><soapenv:Envelope><soapenv:Header/><soapenv:Body><lc:storeDocReq xmlns="http://www.w3.org/2001/XMLSchema" xmlns:lc="http://www.rumbe.ru/soa/lc/1_2">
+    <lc:document use-signature="false" document-type="createProphetBillNotice" guid="e1392e52-ff97-4502-9959-a4bb510ef41e" status="Actualized">
+        <tvr:rumbeCreateIPNotice xmlns:tvr="http://www.rumbe.ru/create/createProphetBillNotice">
+            <orgGuid xmlns="">e1392e52-ff97-4501-9951-a4bb510ef41e</orgGuid>
+            <docType xmlns="">rumbeCreateIPNotice</docType>
+            <noticeDocTypeLock xmlns="">BlockID1</noticeDocTypeLock>
+            <noticeTypeStopped xmlns="">StopOperKass</noticeTypeStopped>
+            <noticeAccNum xmlns="">03951001890</noticeAccNum>
+            <noticeAccActivate xmlns="">2020-08-21</noticeAccActivate>
+            <noticeDocumentStatus xmlns="">Actualized</noticeDocumentStatus>
+            <guid xmlns="">e1392e52-ff97-4502-9959-a4bb510ef41e</guid>
+        </tvr:rumbeCreateIPNotice>
+    </lc:document>
+</lc:storeDocReq></soapenv:Body></soapenv:Envelope></soapenv:Body></soapenv:Envelope>
