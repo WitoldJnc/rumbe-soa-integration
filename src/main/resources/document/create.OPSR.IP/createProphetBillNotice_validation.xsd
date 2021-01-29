@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:cm="http://www.rumbe.ru/common"
+        xmlns:timq="http://www.rumbe.ru/create/createProphetBillNotice"
+        targetNamespace="http://www.rumbe.ru/create/createProphetBillNotice">
+    <import namespace="http://www.rumbe.ru/common" schemaLocation="common.xsd"/>
+    <element name="createProphetBillNotice" type="timq:tcreateProphetBillNotice"/>
+    <complexType name="tcreateProphetBillNotice">
+        <complexContent>
+            <extension base="cm:tDocument">
+                <sequence>
+                    <element name="orgGuid" type="string"/>
+                    <element name="docType" type="string"/>
+                    <element name="TypeLock" type="cm:tName2000">
+                        <annotation>
+                            <appinfo>
+                                <Label>Вид блокировки</Label>
+                                <Definition>Вид блокировки</Definition>
+                            </appinfo>
+                            <documentation>Вид блокировки</documentation>
+                        </annotation>
+                    </element>
+                    <element name="TypeStopedOperation" type="cm:tName2000">
+                        <annotation>
+                            <appinfo>
+                                <Label>Вид приостанавливаемой операции</Label>
+                                <Definition>Вид приостанавливаемой операции</Definition>
+                            </appinfo>
+                            <documentation>Вид приостанавливаемой операции</documentation>
+                        </annotation>
+                    </element>
+                    <element name="PersAccountNum" type="cm:tEq11Text">
+                        <annotation>
+                            <appinfo>
+                                <Label>Номер лицевого счета</Label>
+                                <Definition>Номер лицевого счета</Definition>
+                            </appinfo>
+                            <documentation>Номер лицевого счета</documentation>
+                        </annotation>
+                    </element>
+                    <element name="StartDateActive" type="cm:tActiveDate">
+                        <annotation>
+                            <appinfo>
+                                <Label>Дата с</Label>
+                                <Definition>Дата с</Definition>
+                            </appinfo>
+                            <documentation>Дата с</documentation>
+                        </annotation>
+                    </element>
+                    <element name="SI_TF_DOCSTATE" type="cm:tMax20Text">
+                        <annotation>
+                            <appinfo>
+                                <Label>Статус записи</Label>
+                                <Definition>Статус записи</Definition>
+                            </appinfo>
+                            <documentation>Статус записи</documentation>
+                        </annotation>
+                    </element>
+                    <element name="SI_TF_GUID" type="cm:tLen36Text">
+                        <annotation>
+                            <appinfo>
+                                <Label>Глобальный Идентификатор</Label>
+                                <Definition>Глобальный Идентификатор</Definition>
+                            </appinfo>
+                            <documentation>Глобальный Идентификатор</documentation>
+                        </annotation>
+                    </element>
+                    <element name="LockDocСause" type="cm:tName2000" minOccurs="0">
+                        <annotation>
+                            <appinfo>
+                                <Label>Основание блокировки</Label>
+                                <Definition>Основание блокировки</Definition>
+                            </appinfo>
+                            <documentation>Основание блокировки</documentation>
+                        </annotation>
+                    </element>
+                </sequence>
+                <attribute name="Version" type="cm:tVersion" use="required" fixed="1.0"/>
+            </extension>
+        </complexContent>
+    </complexType>
+</schema>

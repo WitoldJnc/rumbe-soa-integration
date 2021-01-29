@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:cmn="http://www.rumbe.ru/common"
+        targetNamespace="http://www.rumbe.ru/common">
+    <simpleType name="tFormularTypes">
+        <restriction base="string">
+            <enumeration value="dictionary"/>
+            <enumeration value="document"/>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="tIndustrialTypes">
+        <restriction base="boolean"/>
+    </simpleType>
+
+    <complexType name="tDocument" abstract="true">
+        <attribute name="metaType" type="cmn:tFormularTypes" use="optional"/>
+    </complexType>
+
+
+    <simpleType name="tName2000">
+        <restriction base="string">
+            <minLength value="1" fixed="true"/>
+            <maxLength value="2000" fixed="true"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="tMax20Text">
+        <restriction base="string">
+            <minLength value="1" fixed="true"/>
+            <maxLength value="20" fixed="true"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="tEq11Text">
+        <restriction base="string">
+            <length value="11"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="tLen36Text">
+        <restriction base="string">
+            <length value="36"/>
+        </restriction>
+    </simpleType>
+    <simpleType name="tActiveDate">
+        <restriction base="date"/>
+    </simpleType>
+    <simpleType name="tVersion">
+        <restriction base="string"/>
+    </simpleType>
+
+</schema>
