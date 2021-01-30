@@ -121,7 +121,7 @@ public class ImportDocumentRoute extends RouteBuilder {
                     String typeForPath = documentType.substring(0, documentType.indexOf("_"));
                     exchange.setProperty("billType", typeForPath);
                 })
-                .setProperty("validationPath", simple("document/${property.billType}/${property.subSystem}/" +
+                .setProperty("validationPath", simple("kv/storage/document/${property.billType}/${property.subSystem}/" +
                         "${property.clientType}/${property.documentName}_validation.xsd?useSharedSchema=false"))
                 .setBody(exchangeProperty("document"))
                 .convertBodyTo(String.class)
@@ -195,7 +195,7 @@ public class ImportDocumentRoute extends RouteBuilder {
                 .routeId("ToLocalDocTrans")
                 .setBody(exchangeProperty("document"))
                     .setProperty("request", bodyAs(String.class))
-                .setProperty("transfromPath", simple("transform/create/${property.subSystem}/" +
+                .setProperty("transfromPath", simple("kv/storage/transform/create/${property.subSystem}/" +
                         "${property.clientType}/${property.documentName}_fromSub.xsl"))
                 .toD("xslt:${property.transfromPath}")
                     .setProperty("routeId", simple("${routeId}" + " xslt to internal document"))

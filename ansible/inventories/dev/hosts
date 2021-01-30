@@ -1,0 +1,12 @@
+[consul_instances]
+rb-dev-ig01
+rb-dev-ig02
+
+[rumbe-integration]
+rb-dev-ig01
+rb-dev-ig02
+
+[rumbe-integration:vars]
+inventory_name=dev
+
+[java_instances:children]

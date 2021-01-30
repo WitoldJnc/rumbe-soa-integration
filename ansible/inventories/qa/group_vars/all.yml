@@ -1,0 +1,18 @@
+---
+
+inventoryName: dev
+
+kafkaBrokers: 'qa-test-kafka:9092'
+kafkaZookeeper: 'qa-test-zoo:2181'
+
+spring:
+  datasource:
+    url: 'jdbc:postgresql://qa-crs-tcp:5432/rumbe'
+    username: 'sxlQprlz91312'
+    password:  's851120ppkas2124xC'
+  flyway:
+    user: 'sxlQprlz91312'
+    password: 's851120ppkas2124xC'
+
+
+consuleKeysDelete: []
