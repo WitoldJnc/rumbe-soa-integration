@@ -1,0 +1,15 @@
+---
+
+
+#- name: install unzip
+#  tasks:
+
+    - name: Copy unzip
+      copy:
+        src: files/rpm/unzip-6.0-19.el7.x86_64.rpm
+        dest: /tmp
+
+    - name: install unzip
+      package:
+        name: /tmp/unzip-6.0-19.el7.x86_64.rpm
+        state: present

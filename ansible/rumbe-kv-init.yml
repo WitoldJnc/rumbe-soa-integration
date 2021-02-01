@@ -1,0 +1,34 @@
+---
+- name: Prepare distribution for consule key-value
+  hosts: localhost
+  connection: local
+  tags:
+    - patch
+  tasks:
+    - name: find kv
+      find:
+        paths: ./kv
+        recurse: yes
+      register: kv_files
+
+
+- name: install consul rules
+  hosts: consul_instances[0]
+  vars:
+    consul:
+      host: localhost
+      port: 8500
+    common_services:
+      - export_service
+      - import_service
+  tasks:
+
+    - name: add consul kv
+      uri:
+        url: http://{{consul.host}}:{{consul.port}}/v1/kv/{{ item.path | regex_replace('^.*consulKV\/', '') }}
+        method: PUT
+        body: "{{ lookup('file', item.path) }}"
+        status_code: 200
+      with_items: "{{hostvars['localhost']['kv_files'].files + hostvars['localhost']['kv_files_additional'].files}}"
+      tags:
+        - patch

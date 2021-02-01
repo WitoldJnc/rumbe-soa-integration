@@ -1,0 +1,57 @@
+---
+    - name: Create /{{ destFolder }}/{{ module.name }}
+      file:
+        path: "/{{ destFolder }}/{{ module.name }}"
+        state: directory
+      tags: patch
+
+    - name: Copy {{ module.name }}
+      copy:
+        src: "../../{{ module.jar }}"
+        dest: "/{{ destFolder }}/{{ module.name }}"
+        mode: 0644
+      tags: patch
+
+    - name: Create config file
+      template:
+        src: application.properties.j2
+        dest: "/{{ destFolder }}/{{ module.name }}/application.properties"
+      tags:
+        - patch
+        - config
+
+    - name: Create log config file
+      template:
+        src: logback-spring.xml.j2
+        dest: "/{{ destFolder }}/{{ module.name }}/logback-spring.xml"
+      vars:
+        version_file: "{{ lookup('file','../../version.json') | from_json }}"
+      tags:
+        - patch
+        - config
+
+    - name: Create systemd unit
+      template:
+        src: "{{ module.name }}.service.j2"
+        dest: "/etc/systemd/system/{{ module.name }}.service"
+      tags:
+        - patch
+        - config
+
+    - name: Reload systemd
+      systemd:
+        daemon-reload: yes
+        enabled: yes
+        state: started
+        name: "{{ module.name }}"
+      tags:
+        - patch
+        - config
+
+    - name: Restart service
+      systemd:
+        state: restarted
+        name: "{{ module.name }}"
+      tags:
+        - patch
+        - config

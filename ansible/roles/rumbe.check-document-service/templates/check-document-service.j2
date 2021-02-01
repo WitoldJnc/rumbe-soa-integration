@@ -1,0 +1,25 @@
+[Unit]
+Description=Service {{ module.name }}
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/{{ destFolder }}/{{ module.name }}
+Restart=on-abort
+User=camel
+Group=camel
+
+ExecStart=/usr/bin/java \
+-Xmx1024M \
+-Dcom.sun.management.jmxremote \
+-jar {{ module.jar }}
+
+#-Dcom.sun.management.jmxremote.port=3001 \
+#-Djava.rmi.server.hostname=127.0.0.1 \
+#-Dcom.sun.management.jmxremote.local.only=false \
+#-Dcom.sun.management.jmxremote.authenticate=false \
+#-Dcom.sun.management.jmxremote.ssl=false \
+
+
+[Install]
+WantedBy=multi-user.target
