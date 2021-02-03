@@ -1,5 +1,9 @@
 ---
 
+module:
+  name: check-document-service
+  jar: rumbeCheckDocumentsService.jar
+
 inventoryName: dev
 
 kafkaBrokers: 'qa-test-kafka:9092'

@@ -1,59 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <include resource="org/springframework/boot/logging/logback/base.xml" />
+    <property name="LOGS" value="./logs"/>
+
+    <appender name="Console"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %black(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable
+            </Pattern>
+        </layout>
+    </appender>
+
+    <appender name="RollingFile"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/spring-boot-logger.log</file>
+        <encoder
+                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+        </encoder>
+
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS}/archived/spring-boot-logger-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
 
     <appender name="STASH" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_PATH:-logs/}redditApp.log</file>
+        <file>${LOGS}/toLogstash.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH:-logs/}/redditApp.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>logback/redditApp.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>7</maxHistory>
         </rollingPolicy>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
     </appender>
 
-    <appender name="KAFKA" class="com.github.danielwegener.logback.kafka.KafkaAppender">
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <customFields>{"app_name":"{{ logging.app_name }}","app_version":"{{ version_file.projectVersion }}"}</customFields>
-        </encoder>
-
-        <topic>{{logging.topic}}</topic>
-        <!-- ensure that every message sent by the executing host is partitioned to the same partition strategy -->
-        <keyingStrategy class="com.github.danielwegener.logback.kafka.keying.HostNameKeyingStrategy" />
-        <!-- block the logging application thread if the kafka appender cannot keep up with sending the log messages -->
-        <deliveryStrategy class="com.github.danielwegener.logback.kafka.delivery.BlockingDeliveryStrategy">
-            <!-- wait indefinitely until the kafka producer was able to send the message -->
-            <timeout>30000</timeout>
-        </deliveryStrategy>
-
-        <!-- each <producerConfig> translates to regular kafka-client config (format: key=value) -->
-        <!-- producer configs are documented here: https://kafka.apache.org/documentation.html#newproducerconfigs -->
-        <!-- bootstrap.servers is the only mandatory producerConfig -->
-        <producerConfig>bootstrap.servers={{logging.bootstrap_servers}}</producerConfig>
-
-        <!-- If the kafka broker is not online when we try to log, just block until it becomes available -->
-        <producerConfig>metadata.fetch.timeout.ms=99999999999</producerConfig>
-        <!-- define a client-id that you use to identify yourself against the kafka broker -->
-        <producerConfig>client.id=${HOSTNAME}-${CONTEXT_NAME}--${PID}-{{logging.topic}}</producerConfig>
-        <!-- use gzip to compress each batch of log messages. valid values: none, gzip, snappy  -->
-        <producerConfig>compression.type=snappy</producerConfig>
-    </appender>
-
-    <appender name="ASYNC_KAFKA" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref ref="KAFKA" />
-        <queueSize>8192</queueSize>
-    </appender>
-
-
-
-    <!-- LOG everything at INFO level -->
-    <root level="INFO">
-        <appender-ref ref="FILE" />
-        <appender-ref ref="CONSOLE" />
-        <appender-ref ref="STASH" />
-        <appender-ref ref="ASYNC_KAFKA" />
+    <root level="info">
+        <appender-ref ref="RollingFile"/>
+        <appender-ref ref="Console"/>
+        <appender-ref ref="STASH"/>
     </root>
+    <logger name="ru.rumbe.check" level="trace"/>
 
-    <logger name="ru.rumbe.check" level="trace" />
-    <logger name="org.apache.camel.spring.cloud" level="debug"/>
+
 </configuration>
