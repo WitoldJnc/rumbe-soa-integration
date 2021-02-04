@@ -1,0 +1,12 @@
+[consul_instances]
+rb-qa-ig01
+rb-qa-ig02
+
+[rumbe-integration]
+rb-qa-ig01
+rb-qa-ig02
+
+[rumbe-integration:vars]
+inventory_name=qa
+
+[java_instances:children]

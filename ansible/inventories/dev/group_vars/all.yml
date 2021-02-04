@@ -1,0 +1,22 @@
+---
+
+module:
+  name: check-document-service
+  jar: rumbeCheckDocumentsService.jar
+
+inventoryName: dev
+
+kafkaBrokers: 'kafka:9092'
+kafkaZookeeper: 'zookeeper:2181'
+
+spring:
+  datasource:
+    url: 'jdbc:postgresql://dev-crs-tcp:5432/rumbe'
+    username: 'droidpq209zld'
+    password:  's851120ppkas2124xC'
+  flyway:
+    user: 'droidpq209zld'
+    password: 's851120ppkas2124xC'
+
+
+consuleKeysDelete: []
