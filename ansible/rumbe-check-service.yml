@@ -1,0 +1,11 @@
+---
+- name: install unzip
+  hosts: rumbe-integration
+  roles:
+    - role: rumbe.unzip
+
+- name: install rumbeCheckDocumentsService
+  hosts: rumbe-integration
+  roles:
+    - rumbe.check-document-service
+

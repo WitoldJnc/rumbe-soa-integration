@@ -1,0 +1,10 @@
+---
+
+kafka_topics:
+  - name: rumbe_integration_to_soa_store_topic
+    partitions: 2
+  - name: rumbe_integration_to_soa_transfer_topic
+    partitions: 2
+  - name: rumbe_importDocument_topic
+    partitions: 2
+  - name: rumbe_log_topic

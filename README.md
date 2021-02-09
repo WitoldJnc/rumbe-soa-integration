@@ -143,9 +143,27 @@ The creation of the  application image takes place during the building of the pr
                 </executions>
             </plugin>
 ```
+### Deploying
+Deploying the application to different environments is done through Ansible, configured for each environment.
+
+[Ansible readme file](ansible/README.md)
+
+### Distribution
+The distribution a application is implemented with maven.assembly.plugin and when assembled includes:
+* application jar
+* actual kv storage, to be updated in the environment
+* ansible scripts for deploying an application in an environment
+* current version description
+
+[distribution configuration](src/main/assembly/dist.xml)
+
+### release branch git metadata 
+to see branch metadata:  **host:port/actuator/info**
+
 **Stack involved in the development of the IS**   
 Spring Boot  
 Apache Camel (Java DSL, xslt, xsd validation)   
 Apache Kafka  
 CXF  
 Postgres, Flyway (migration)
+Ansible (deployment)

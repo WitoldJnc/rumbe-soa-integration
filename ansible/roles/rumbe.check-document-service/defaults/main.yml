@@ -1,0 +1,74 @@
+module:
+  name: check-document-service
+  jar: rumbeCheckDocumentsService.jar
+
+routeversion: '@project.version@'
+
+server:
+  port: 8080
+
+consul:
+    host: 'localhost'
+    port: 8500
+
+cxf:
+    path: '/cxf'
+
+rootShareDir: '/share'
+
+logging:
+  config: 'logback-spring.xml'
+  path: logs
+  topic: "logs"
+  bootstrap_servers: "{{ kafkaBrokers }}"
+  app_name: "rumbe-check-doc.{{ module.name }}"
+  app_version: "noversion"
+  commit: ""
+
+checkDocument:
+  url: /checkDocumentService
+elk:
+  index:
+    id: elkIndexName
+    name: rumbe_check_doc_service
+rumbe:
+  check-document:
+    check-import-document:
+      url: ${checkDocument.url:}
+store-document:
+  kafka_topic: rumbe_integration_to_soa_store_topic
+  url: http://www.rumbe.ru/soa/lc/1_2/lifecycle
+transfer-document:
+  kafka_topic: rumbe_integration_to_soa_transfer_topic
+  url: http://www.rumbe.ru/soa/lc/1_2/transfer
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    password: postgres
+    url: jdbc:postgresql://postgres:5432/rumbe
+    username: postgres
+  flyway:
+    defaultSchema: documents
+    enabled: true
+    password: postgres
+    schemas: documents
+    url: jdbc:postgresql://postgres:5432/rumbe
+    user: postgres
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        default_schema: documents
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+kafka:
+  broker-url: kafka:9092
+  group-id: rumbe
+kafka-import-document-topic: rumbe_importDocument_topic
+kafka-import-document-url: kafka://brokers=${kafka.broker-url:}?topic=${kafka-import-document-topic:}&groupId=${kafka.group-id:}
+kafka-log-topic: rumbe_log_topic
+kafka-log-url: kafka://brokers=${kafka.broker-url:}?topic=${kafka-log-topic:}&groupId=${kafka.group-id:}
+kafka-soa-store-document-url: kafka://brokers=${kafka.broker-url:}?topic=${store-document.kafka_topic:}&groupId=${kafka.group-id:}
+kafka-soa-transfer-document-url: kafka://brokers=${kafka.broker-url:}?topic=${transfer-document.kafka_topic:}&groupId=${kafka.group-id:}
