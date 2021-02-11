@@ -147,9 +147,26 @@ from("direct:toLocalDocumentTransfrom")
                 </executions>
             </plugin>
 ```
+
+
+### Деплой на стенды
+Для удобства разворачивания приложения на различные контуры, испольуется Ansible с конфигурацией под каждый стенд.
+
+[Ansible readme file](ansible/README.md)
+
+### Распространение
+Поставка ПО реализована с помощью maven.assembly.plugin и при сборке включает в себя:
+* jar с приложением
+* актуальное на момент разработки kv хранилище, для актуализации на стенде
+* ansible скрипты для разворачивания приложения в контуре
+* описание актуальной версии
+
+[конфигурация распространения](src/main/assembly/dist.xml)
+
 **Задействованные при создании ИС технологии**   
 Spring Boot  
 Apache Camel (Java DSL, xslt, xsd validation)   
 Apache Kafka  
 CXF  
 Postgres, Flyway (migration)
+Ansible (deployment)
