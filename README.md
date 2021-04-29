@@ -125,7 +125,7 @@ The creation of the  application image takes place during the building of the pr
                 <configuration>
                     <images>
                         <image>
-                            <name>ph-daily-trash-bot</name>
+                            <name>rumbe-check-document-service</name>
                             <build>
                                 <dockerFileDir>${project.basedir}</dockerFileDir>
                             </build>
